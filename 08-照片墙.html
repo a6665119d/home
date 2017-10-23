@@ -1,0 +1,198 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        ul{
+            width:640px;
+            margin: auto;
+            position: relative;
+        }
+        ul li{
+            width:200px;
+            height:150px;
+            text-align: center;
+            margin-right: 20px;
+            margin-top: 20px;
+            float: left;
+        }
+        ul li:nth-child(3n){
+            margin-right: 0;
+        }
+        li.cur{
+          border: 1px red dashed;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li><img src="images/1.jpg" alt=""></li>
+    <li><img src="images/2.jpg" alt=""></li>
+    <li><img src="images/3.jpg" alt=""></li>
+    <li><img src="images/4.jpg" alt=""></li>
+    <li><img src="images/5.jpg" alt=""></li>
+    <li><img src="images/1.jpg" alt=""></li>
+    <li><img src="images/2.jpg" alt=""></li>
+    <li><img src="images/3.jpg" alt=""></li>
+    <li><img src="images/4.jpg" alt=""></li>
+</ul>
+
+<script src="noTwo.js"></script>
+<script>
+    var aLi=document.getElementsByTagName("li");
+
+    var pos=[];
+    var zIndex=1;
+
+    //布局转换
+    for(var i=0; i<aLi.length; i++){
+        aLi[i].index=i;
+        pos[i]={left:aLi[i].offsetLeft,top:aLi[i].offsetTop};
+    }
+
+    console.log(pos)
+
+    for(var i=0; i<pos.length; i++){
+        aLi[i].style.position="absolute";
+        aLi[i].style.left=pos[i].left+"px";
+        aLi[i].style.top=pos[i].top+"px";
+    }
+
+    //拖拽
+    for(var i=0; i<aLi.length; i++){
+        starDar(aLi[i]);
+    }
+
+    function starDar(obj){
+        obj.onmousedown=function (ev) {
+            var oEvent=ev || event;
+            var x = oEvent.clientX - obj.offsetLeft;
+            var y = oEvent.clientY - obj.offsetTop;
+
+            zIndex++;
+            obj.style.zIndex=zIndex;
+
+            document.onmousemove=function (ev) {
+                var oEvent=ev || event;
+                obj.style.left=oEvent.clientX - x + "px";
+                obj.style.top=oEvent.clientY - y + "px";
+
+                //不选 中文字
+                window.getSelection().empty();
+
+                /*for(var i=0; i<aLi.length; i++) {
+                    if (obj == aLi[i]) continue; //你按下就马上松开了
+                    //移动时候，碰到到没
+                    aLi[i].className = "";
+                  if (cdTest(obj, aLi[i])) {
+                        //true
+                        aLi[i].className = "cur";
+                    }
+                }*/
+                for(var i=0; i<aLi.length; i++) {
+                    aLi[i].className = "";
+                }
+
+                var oNear=getNear(obj);
+                if (oNear){
+                    oNear.className="cur";
+                }
+
+            };
+            document.onmouseup=function(){
+                document.onmousemove=null;
+
+                //松开鼠标调换位置
+                var oNear=getNear(obj);
+                if (oNear){
+                    //换位置
+                    animate(obj,pos[oNear.index]);  //oNear是最的哪个   obj是你按下的哪个
+                    animate(oNear,pos[obj.index]);
+
+                    //两个变量交换位置 var a=1; b=2;
+                    var tmp=0;
+                    tmp=obj.index;
+                    obj.index = oNear.index;
+                    oNear.index=tmp;
+                }
+                else{
+                    //回到原来的位置
+                    animate(obj,pos[obj.index])
+
+                }
+
+            }
+            return false; // 核心代码
+        }
+    }
+
+
+    //碰撞检测   找到最近的（勾股定理）
+    function cdTest(obj1,obj2){
+        var L1=obj1.offsetLeft + obj1.offsetWidth;
+        var R1=obj1.offsetLeft;
+        var T1=obj1.offsetTop + obj1.offsetHeight
+        var B1=obj1.offsetTop;
+
+        var L2=obj2.offsetLeft;
+        var R2=obj2.offsetLeft + obj2.offsetWidth;
+        var T2=obj2.offsetTop;
+        var B2=obj2.offsetTop + obj2.offsetHeight;
+
+        if(L1<L2 || R1>R2 || T1<T2 || B1>B2){
+            //没碰到了
+            //一定要反来写来
+            return false;
+        }
+        else{
+            return true;
+        }
+    }
+
+
+
+    function getDis(obj1,obj2){
+        var a=obj1.offsetLeft - obj2.offsetLeft;
+        var b=obj1.offsetTop - obj2.offsetTop;
+
+        return Math.sqrt(a*a+b*b) //最近的
+    }
+
+    //找到碰到了 并且最近的
+    function getNear(obj){
+        var min=99999999999;
+        var minIndex=-1;
+
+        for(var i=0; i<aLi.length; i++) {
+            if (obj == aLi[i]) continue; //你按下就马上松开了
+            if (cdTest(obj,aLi[i])){ //碰到了
+                //找最近的
+                var dis = getDis(obj,aLi[i])
+                if (min > dis){
+                    min=dis;
+                    minIndex=i;
+                }
+            }
+        }
+
+        if (minIndex == -1){
+            return false;
+        }
+        else {
+            return aLi[minIndex]  //返回一个碰到了 并且最近LI
+        }
+    }
+
+
+    //，两个变量交换位置
+
+
+</script>
+</body>
+</html>

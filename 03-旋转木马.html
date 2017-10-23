@@ -1,0 +1,83 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        .box{
+            width: 1200px;
+            margin: 20px auto;
+            height: 500px;
+            position: relative;
+            border: 1px red solid;
+        }
+        .box ul{
+            position: relative;
+            z-index: 1;
+        }
+        .box ul li{
+            position: absolute;
+            top: 0px;
+            left: 0px;
+        }
+        ul li img{
+            width:100%;
+        }
+        .box .ctr{
+            position: relative;
+            z-index: 2;
+        }
+    </style>
+</head>
+<body>
+    <div class="box">
+        <ul class="inner">
+            <li><img src="images/slidepic8.jpg" alt=""></li>
+            <li><img src="images/slidepic7.jpg" alt=""></li>
+            <li><img src="images/slidepic4.jpg" alt=""></li>
+            <li><img src="images/slidepic5.jpg" alt=""></li>
+            <li><img src="images/slidepic6.jpg" alt=""></li>
+        </ul>
+        <div class="ctr">
+            <a href="javascript:;"><img src="images/prev.png" alt=""></a>
+            <a href="javascript:;"><img src="images/next.png" onclick="next()" alt=""></a>
+        </div>
+    </div>
+    <script src="noTwo.js"></script>
+    <script>
+        var aLi=$("",".box .inner li");
+        var json=[
+            {width:400,height:250,opacity:0.5,zIndex:1,left:50,top:20},  //1
+            {width:600,height:375,opacity:0.7,zIndex:2,left:0,top:70},  //2
+            {width:700,height:400,opacity:1,zIndex:3,left:250,top:100},  //3
+            {width:600,height:375,opacity:0.7,zIndex:2,left:600,top:70},  //4
+            {width:400,height:250,opacity:0.5,zIndex:1,left:750,top:20}, //5
+        ];
+        //初始化
+        for(var i=0; i<aLi.length;i++){
+            animate(aLi[i],json[i])
+        }
+
+        //下一张
+        function next(){
+            //把一张删除，放到最一个
+            json.push(json.shift());
+
+            for(var i=0; i<aLi.length;i++){
+                animate(aLi[i],json[i])
+            }
+        }
+
+        /*
+        * var arr1=[1,2,3,4,5];
+         arr1.push(arr1.shift())
+         console.log(arr1)
+        * */
+    </script>
+</body>
+</html>

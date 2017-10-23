@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Document</title>
+    <style>
+        *{
+            margin: 0;
+            padding: 0;
+            list-style: none;
+        }
+        ul{
+            width:640px;
+            margin: auto;
+            position: relative;
+        }
+        ul li{
+            width:200px;
+            height:150px;
+            text-align: center;
+            margin-right: 20px;
+            margin-top: 20px;
+            float: left;
+        }
+        ul li:nth-child(3n){
+            margin-right: 0;
+        }
+    </style>
+</head>
+<body>
+<ul>
+    <li><img src="images/1.jpg" alt=""></li>
+    <li><img src="images/2.jpg" alt=""></li>
+    <li><img src="images/3.jpg" alt=""></li>
+    <li><img src="images/4.jpg" alt=""></li>
+    <li><img src="images/5.jpg" alt=""></li>
+    <li><img src="images/1.jpg" alt=""></li>
+    <li><img src="images/2.jpg" alt=""></li>
+    <li><img src="images/3.jpg" alt=""></li>
+    <li><img src="images/4.jpg" alt=""></li>
+</ul>
+
+<script>
+    var aLi=document.getElementsByTagName("li");
+
+    var pos=[];
+
+    //布局转换
+    for(var i=0; i<aLi.length; i++){
+        pos[i]={left:aLi[i].offsetLeft,top:aLi[i].offsetTop};
+    }
+
+    console.log(pos)
+
+    for(var i=0; i<pos.length; i++){
+        aLi[i].style.position="absolute";
+        aLi[i].style.left=pos[i].left+"px";
+        aLi[i].style.top=pos[i].top+"px";
+    }
+
+    //拖拽
+    for(var i=0; i<aLi.length; i++){
+        starDar(aLi[i]);
+    }
+
+    function starDar(obj){
+        obj.onmousedown=function (ev) {
+            var oEvent=ev || event;
+            var x = oEvent.clientX - obj.offsetLeft;
+            var y = oEvent.clientY - obj.offsetTop;
+
+            document.onmousemove=function (ev) {
+                var oEvent=ev || event;
+                obj.style.left=oEvent.clientX - x + "px";
+                obj.style.top=oEvent.clientY - y + "px";
+
+                //不选 中文字
+                window.getSelection().empty();
+            }
+            document.onmouseup=function(){
+                document.onmousemove=null;
+            }
+            return false; // 核心代码
+        }
+    }
+
+
+    //碰撞检测   找到最近的（勾股定理）
+    function cdTest(obj1,obj2){
+
+    }
+
+
+    //如果碰到了，两个变量交换位置
+
+
+</script>
+</body>
+</html>
